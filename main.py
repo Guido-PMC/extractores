@@ -22,7 +22,7 @@ class switch:
 
 updater = Updater(token="5892683093:AAExln2A6M5JillrPfALhzSbAuZtZPk5FDE")
 dispatcher = updater.dispatcher
-credenciales = "/Users/guigonzalez/Desktop/PMCAutomatismos/pilarminingco-c11e8da70b2f.json"
+credenciales = "/creds/pilarminingco-c11e8da70b2f.json"
 
 print(f"La hora actual es: {datetime.now().strftime('%H:%M')}")
 
