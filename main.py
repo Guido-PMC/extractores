@@ -28,7 +28,7 @@ print(f"La hora actual es: {datetime.now().strftime('%H:%M')}")
 
 
 def turnONByName(list_devices,name):
-    list_devices[name].turn_off()
+    list_devices[name].turn_on()
 
 
 def turnOFFByName(list_devices,name):
