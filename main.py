@@ -183,7 +183,7 @@ def setWeekendStopTime(update: Update, context: CallbackContext):
             context.bot.send_message(chat_id=update.effective_chat.id, text=f"String VACIO - ERROR")
         else:
             try:
-                updateCellByLetter("Automatismo Extractores", "Hoja 1", "D2", hora)
+                updateCellByLetter("Automatismo Extractores", "Hoja 1", "C2", hora)
                 schedule.cancel_job(weekendStopJob)
                 schedule.every().saturday.at(str(hora)).do(weekendStopJob)
                 schedule.every().sunday.at(str(hora)).do(weekendStopJob)
