@@ -97,7 +97,7 @@ weekend_stop = getSheetsDataFrame("Automatismo Extractores", "Hoja 1")["Weekend 
 
 
 
-print(admins_ids,start_time,end_time)
+print(admins_ids,start_time,end_time,weekend_start,weekend_stop)
 
 def startCommand(update: Update, context: CallbackContext):
     if (update.effective_chat.username) in admins_ids:
@@ -196,21 +196,21 @@ def setWeekendStopTime(update: Update, context: CallbackContext):
             except Exception as e:
                 context.bot.send_message(chat_id=update.effective_chat.id, text=f"Error actualizando Base de datos + {e}")
 
-schedule.every(1).monday.at(str(hora)).do(startJob)
-schedule.every(1).tuesday.at(str(hora)).do(startJob)
-schedule.every(1).wednesday.at(str(hora)).do(startJob)
-schedule.every(1).thursday.at(str(hora)).do(startJob)
-schedule.every(1).friday.at(str(hora)).do(startJob)
-schedule.every().saturday.at(str(hora)).do(weekendStartJob)
-schedule.every().sunday.at(str(hora)).do(weekendStartJob)
+schedule.every(1).monday.at(str(start_time)).do(startJob)
+schedule.every(1).tuesday.at(str(start_time)).do(startJob)
+schedule.every(1).wednesday.at(str(start_time)).do(startJob)
+schedule.every(1).thursday.at(str(start_time)).do(startJob)
+schedule.every(1).friday.at(str(start_time)).do(startJob)
+schedule.every().saturday.at(str(weekend_start)).do(weekendStartJob)
+schedule.every().sunday.at(str(weekend_start)).do(weekendStartJob)
 
-schedule.every(1).monday.at(str(hora)).do(stopJob)
-schedule.every(1).tuesday.at(str(hora)).do(stopJob)
-schedule.every(1).wednesday.at(str(hora)).do(stopJob)
-schedule.every(1).thursday.at(str(hora)).do(stopJob)
-schedule.every(1).friday.at(str(hora)).do(stopJob)
-schedule.every().saturday.at(str(hora)).do(weekendStopJob)
-schedule.every().sunday.at(str(hora)).do(weekendStopJob)
+schedule.every(1).monday.at(str(end_time)).do(stopJob)
+schedule.every(1).tuesday.at(str(end_time)).do(stopJob)
+schedule.every(1).wednesday.at(str(end_time)).do(stopJob)
+schedule.every(1).thursday.at(str(end_time)).do(stopJob)
+schedule.every(1).friday.at(str(end_time)).do(stopJob)
+schedule.every().saturday.at(str(weekend_stop)).do(weekendStopJob)
+schedule.every().sunday.at(str(weekend_stop)).do(weekendStopJob)
 
 dispatcher.add_handler(CommandHandler("start", startCommand))
 dispatcher.add_handler(CommandHandler("setStartTime", setStartTime))
