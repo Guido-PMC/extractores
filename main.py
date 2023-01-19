@@ -92,6 +92,11 @@ def updateCellByLetter(documento, hoja, cell, data):
 admins_ids = getSheetsDataFrame("Automatismo Extractores", "Hoja 1")["IDS Admins"].to_list()
 start_time = getSheetsDataFrame("Automatismo Extractores", "Hoja 1")["Start"].to_list()[0]
 end_time = getSheetsDataFrame("Automatismo Extractores", "Hoja 1")["End"].to_list()[0]
+weekend_start = getSheetsDataFrame("Automatismo Extractores", "Hoja 1")["Weekend Start"].to_list()[0]
+weekend_stop = getSheetsDataFrame("Automatismo Extractores", "Hoja 1")["Weekend End"].to_list()[0]
+
+
+
 print(admins_ids,start_time,end_time)
 
 def startCommand(update: Update, context: CallbackContext):
@@ -191,7 +196,21 @@ def setWeekendStopTime(update: Update, context: CallbackContext):
             except Exception as e:
                 context.bot.send_message(chat_id=update.effective_chat.id, text=f"Error actualizando Base de datos + {e}")
 
+schedule.every(1).monday.at(str(hora)).do(startJob)
+schedule.every(1).tuesday.at(str(hora)).do(startJob)
+schedule.every(1).wednesday.at(str(hora)).do(startJob)
+schedule.every(1).thursday.at(str(hora)).do(startJob)
+schedule.every(1).friday.at(str(hora)).do(startJob)
+schedule.every().saturday.at(str(hora)).do(weekendStartJob)
+schedule.every().sunday.at(str(hora)).do(weekendStartJob)
 
+schedule.every(1).monday.at(str(hora)).do(stopJob)
+schedule.every(1).tuesday.at(str(hora)).do(stopJob)
+schedule.every(1).wednesday.at(str(hora)).do(stopJob)
+schedule.every(1).thursday.at(str(hora)).do(stopJob)
+schedule.every(1).friday.at(str(hora)).do(stopJob)
+schedule.every().saturday.at(str(hora)).do(weekendStopJob)
+schedule.every().sunday.at(str(hora)).do(weekendStopJob)
 
 dispatcher.add_handler(CommandHandler("start", startCommand))
 dispatcher.add_handler(CommandHandler("setStartTime", setStartTime))
