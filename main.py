@@ -31,6 +31,7 @@ def turnONByName(list_devices,name):
     list_devices[name].turn_on()
 
 
+
 def turnOFFByName(list_devices,name):
     list_devices[name].turn_off()
 
@@ -61,6 +62,14 @@ def startJob():
 
 def stopJob():
     print("Es la hora de apagar el extractor")
+    turnOFFByName(list_devices,"EXTRACTOR PODER2")
+
+def weekendStartJob():
+    print("Es la hora de prender el extractor - fin de semana")
+    turnONByName(list_devices,"EXTRACTOR PODER2")
+
+def weekendStopJob():
+    print("Es la hora de apagar el extractor - finde semana")
     turnOFFByName(list_devices,"EXTRACTOR PODER2")
 
 def getSheetsDataFrame(sheet, worksheet):
@@ -102,7 +111,13 @@ def setStartTime(update: Update, context: CallbackContext):
             try:
                 updateCellByLetter("Automatismo Extractores", "Hoja 1", "B2", hora)
                 schedule.cancel_job(startJob)
-                schedule.every(1).day.at(str(hora)).do(startJob)
+
+                schedule.every(1).monday.at(str(hora)).do(startJob)
+                schedule.every(1).tuesday.at(str(hora)).do(startJob)
+                schedule.every(1).wednesday.at(str(hora)).do(startJob)
+                schedule.every(1).thursday.at(str(hora)).do(startJob)
+                schedule.every(1).friday.at(str(hora)).do(startJob)
+
                 context.bot.send_message(chat_id=update.effective_chat.id, text=f"Seteado START a las {hora}")
             except Exception as e:
                 context.bot.send_message(chat_id=update.effective_chat.id, text=f"Error actualizando Base de datos + {e}")
@@ -119,8 +134,14 @@ def setStopTime(update: Update, context: CallbackContext):
         else:
             try:
                 updateCellByLetter("Automatismo Extractores", "Hoja 1", "C2", hora)
-                schedule.cancel_job(startJob)
-                schedule.every(1).day.at(str(hora)).do(stopJob)
+                schedule.cancel_job(stopJob)
+
+                schedule.every(1).monday.at(str(hora)).do(stopJob)
+                schedule.every(1).tuesday.at(str(hora)).do(stopJob)
+                schedule.every(1).wednesday.at(str(hora)).do(stopJob)
+                schedule.every(1).thursday.at(str(hora)).do(stopJob)
+                schedule.every(1).friday.at(str(hora)).do(stopJob)
+
                 context.bot.send_message(chat_id=update.effective_chat.id, text=f"Seteado STOP a las {hora}")
             except Exception as e:
                 context.bot.send_message(chat_id=update.effective_chat.id, text=f"Error actualizando Base de datos + {e}")
@@ -136,11 +157,47 @@ def getInfo(update: Update, context: CallbackContext):
         except Exception as e:
             context.bot.send_message(chat_id=update.effective_chat.id, text=f"Error leyendo Base de datos + {e}")
 
+def setWeekendStartTime(update: Update, context: CallbackContext):
+    if (update.effective_chat.username) in admins_ids:
+        print("Estoy hablando con un ADMIN")
+        hora = update.effective_message.text.split()[-1].replace("'","")
+        hora = hora.replace('"','')
+        if "setWeekendTime" in hora:
+            context.bot.send_message(chat_id=update.effective_chat.id, text=f"String VACIO - ERROR")
+        else:
+            try:
+                updateCellByLetter("Automatismo Extractores", "Hoja 1", "D2", hora)
+                schedule.cancel_job(weekendStartJob)
+                schedule.every().saturday.at(str(hora)).do(weekendStartJob)
+                schedule.every().sunday.at(str(hora)).do(weekendStartJob)
+                context.bot.send_message(chat_id=update.effective_chat.id, text=f"Seteado weekend START a las {hora}")
+            except Exception as e:
+                context.bot.send_message(chat_id=update.effective_chat.id, text=f"Error actualizando Base de datos + {e}")
+
+def setWeekendStopTime(update: Update, context: CallbackContext):
+    if (update.effective_chat.username) in admins_ids:
+        print("Estoy hablando con un ADMIN")
+        hora = update.effective_message.text.split()[-1].replace("'","")
+        hora = hora.replace('"','')
+        if "setWeekendTime" in hora:
+            context.bot.send_message(chat_id=update.effective_chat.id, text=f"String VACIO - ERROR")
+        else:
+            try:
+                updateCellByLetter("Automatismo Extractores", "Hoja 1", "D2", hora)
+                schedule.cancel_job(weekendStopJob)
+                schedule.every().saturday.at(str(hora)).do(weekendStopJob)
+                schedule.every().sunday.at(str(hora)).do(weekendStopJob)
+                context.bot.send_message(chat_id=update.effective_chat.id, text=f"Seteado weekend START a las {hora}")
+            except Exception as e:
+                context.bot.send_message(chat_id=update.effective_chat.id, text=f"Error actualizando Base de datos + {e}")
+
 
 
 dispatcher.add_handler(CommandHandler("start", startCommand))
 dispatcher.add_handler(CommandHandler("setStartTime", setStartTime))
 dispatcher.add_handler(CommandHandler("setStopTime", setStopTime))
+dispatcher.add_handler(CommandHandler("setWeekendStopTime", setWeekendStopTime))
+dispatcher.add_handler(CommandHandler("setWeekendStartTime", setWeekendStartTime))
 dispatcher.add_handler(CommandHandler("getInfo", getInfo))
 
 updater.start_polling()
