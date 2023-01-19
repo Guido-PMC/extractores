@@ -187,7 +187,7 @@ def setWeekendStopTime(update: Update, context: CallbackContext):
                 schedule.cancel_job(weekendStopJob)
                 schedule.every().saturday.at(str(hora)).do(weekendStopJob)
                 schedule.every().sunday.at(str(hora)).do(weekendStopJob)
-                context.bot.send_message(chat_id=update.effective_chat.id, text=f"Seteado weekend START a las {hora}")
+                context.bot.send_message(chat_id=update.effective_chat.id, text=f"Seteado weekend STOP a las {hora}")
             except Exception as e:
                 context.bot.send_message(chat_id=update.effective_chat.id, text=f"Error actualizando Base de datos + {e}")
 
